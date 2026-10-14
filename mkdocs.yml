@@ -1,9 +1,15 @@
 site_name: Docs as Code
 
 theme:
-
-name: readthedocs
+  name: readthedocs
 
 plugins:
+  - search
+  - mermaid2
 
-- search
+nav:
+  - Главная: index.md
+  - Проект:
+      - Описание: project/overview.md
+      - Требования: project/requirements.md
+      - Диаграммы: project/diagrams.md
