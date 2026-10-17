@@ -1,0 +1,157 @@
+openapi: 3.0.3
+info:
+  title: Image Classifier API
+  description: API для работы с ИИ-сервисом классификации изображений
+  version: 1.0.0
+
+servers:
+  - url: https://example.com/api/v1
+
+paths:
+  /classifications:
+    post:
+      summary: Классифицировать изображение
+      description: Загружает изображение и возвращает предсказанную категорию с уверенностью модели.
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - image
+              properties:
+                image:
+                  type: string
+                  format: binary
+                  description: Изображение в формате JPG или PNG
+      responses:
+        '200':
+          description: Классификация выполнена
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClassificationResult'
+        '400':
+          description: Некорректный запрос (например, пустой файл)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '415':
+          description: Неподдерживаемый формат файла
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Внутренняя ошибка сервиса или модель недоступна
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    get:
+      summary: Получить историю классификаций
+      description: Возвращает список классификаций за указанный промежуток времени по определённым классам.
+      parameters:
+        - name: from
+          in: query
+          description: Начало периода (ISO 8601)
+          required: false
+          schema:
+            type: string
+            format: date-time
+          example: '2025-01-01T00:00:00Z'
+        - name: to
+          in: query
+          description: Конец периода (ISO 8601)
+          required: false
+          schema:
+            type: string
+            format: date-time
+          example: '2025-01-31T23:59:59Z'
+        - name: classes
+          in: query
+          description: Список классов через запятую (например, cat,dog)
+          required: false
+          schema:
+            type: string
+          example: cat,dog
+      responses:
+        '200':
+          description: История получена
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ClassificationResult'
+        '400':
+          description: Некорректные параметры запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /classifications/{id}:
+    get:
+      summary: Получить результат классификации по ID
+      description: Возвращает детальную информацию о ранее выполненной классификации.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Идентификатор результата классификации
+          schema:
+            type: integer
+          example: 123
+      responses:
+        '200':
+          description: Результат найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClassificationResult'
+        '404':
+          description: Результат не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  schemas:
+    ClassificationResult:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 123
+        category:
+          type: string
+          example: cat
+        confidence:
+          type: number
+          format: float
+          example: 0.94
+        modelVersion:
+          type: string
+          example: 'v1.2.0'
+        createdAt:
+          type: string
+          format: date-time
+          example: '2025-01-15T10:30:00Z'
+        imageUrl:
+          type: string
+          example: 'https://example.com/api/v1/images/123.jpg'
+
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+          example: INVALID_IMAGE
+        message:
+          type: string
+          example: Image must be a JPG or PNG file
