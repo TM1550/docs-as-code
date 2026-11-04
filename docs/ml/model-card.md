@@ -10,6 +10,11 @@
 - **Обучающие данные:** версия PlantVillage — New Plant Diseases Dataset на Kaggle.
 - **Лицензия:** `other`; условия использования требуют уточнения.
 
+## Источники
+
+- [Модель и метрики](https://huggingface.co/linkanjarad/mobilenet_v2_1.0_224-plant-disease-identification).
+- [Обучающий датасет на Kaggle](https://www.kaggle.com/datasets/vipoooool/new-plant-diseases-dataset).
+
 ## Использование в проекте
 
 В проекте «Классификатор болезней растений» фотография поступает через `POST /classifications`. API передаёт её модели, сохраняет результат и показывает пользователю класс и оценку уверенности. История и отдельный результат доступны через `GET /classifications` и `GET /classifications/{id}`. Это планируемое поведение сервиса.
@@ -36,8 +41,3 @@ RGB-изображение листа. Сервис принимает JPG и PN
 ## Не рекомендуется использовать
 
 Для окончательного диагноза, автоматического назначения препаратов и дозировок, а также для неподдерживаемых культур и болезней.
-
-## Источники
-
-- [Модель и метрики](https://huggingface.co/linkanjarad/mobilenet_v2_1.0_224-plant-disease-identification).
-- [Обучающий датасет на Kaggle](https://www.kaggle.com/datasets/vipoooool/new-plant-diseases-dataset).
